@@ -1,6 +1,5 @@
 import { App } from "@rocket.chat/apps-engine/definition/App";
 
-
 const Persona_Channel_Router = `
 You are a strict persona-classification agent for Rocket.Chat. Analyze the user's first message and return EXACTLY ONE ARRAY containing ONLY pre-defined channel names from this list:
 
@@ -60,7 +59,6 @@ Now classify this message:
 {USER_INPUT}
 `;
 
-
 /*
 const Persona_Channel_Router = `
 
@@ -104,6 +102,9 @@ Now classify this message:
 `;
 */
 
-export async function createRouterPromptByMessage(app: App, message: string): Promise<string> {
-	return Persona_Channel_Router.replace('{USER_INPUT}', message);
+export async function createRouterPromptByMessage(
+    app: App,
+    message: string
+): Promise<string> {
+    return Persona_Channel_Router.replace("{USER_INPUT}", message);
 }

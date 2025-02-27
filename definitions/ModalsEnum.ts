@@ -1,3 +1,3 @@
 export enum Modals {
-	OnboardingForm = 'OnboardingFormModal',
+    OnboardingForm = "OnboardingFormModal",
 }

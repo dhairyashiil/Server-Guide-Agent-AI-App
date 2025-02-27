@@ -1,1 +1,1 @@
-export * from './onboarding-form/OnboardingFormModal';
+export * from "./onboarding-form/OnboardingFormModal";

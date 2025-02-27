@@ -71,50 +71,59 @@ export class ExecuteViewSubmitHandler {
         const selectOption =
             view.state?.["selectOptionId"]["selectOptionId"] || "";
 
-        if(onboardingMessage.trim() !== "") {
+        if (onboardingMessage.trim() !== "") {
             let channelNameByLlm: string;
-            
-            const prompt = await createRouterPromptByMessage(this.app, onboardingMessage);
+
+            const prompt = await createRouterPromptByMessage(
+                this.app,
+                onboardingMessage
+            );
             channelNameByLlm = await createTextCompletion(
                 this.app,
                 room,
                 user,
                 this.http,
-                prompt,
+                prompt
             );
-            
+
             const regex = /\["#(\w+)"\]/;
             const match = channelNameByLlm.match(regex);
             const channelName = match?.[1];
-            
-            if(channelName) {
-                const channelNameRoom = await this.read.getRoomReader().getByName(channelName);
-                
-                if (!channelNameRoom) { 
+
+            if (channelName) {
+                const channelNameRoom = await this.read
+                    .getRoomReader()
+                    .getByName(channelName);
+
+                if (!channelNameRoom) {
                     console.error(`Room with name "${channelName}" not found`);
-                }
-                else {
+                } else {
                     try {
                         await joinUserToRoom(
-                            this.read, 
-                            this.modify, 
-                            this.http, 
-                            this.persistence, 
-                            user, 
-                            channelNameRoom, 
+                            this.read,
+                            this.modify,
+                            this.http,
+                            this.persistence,
+                            user,
+                            channelNameRoom
                         );
-                        console.log(`User ${user.username} has been added to the room ${channelNameRoom.displayName}`);
+                        console.log(
+                            `User ${user.username} has been added to the room ${channelNameRoom.displayName}`
+                        );
                     } catch (error) {
-                        console.error(`Failed to add user ${user.username} to the room ${channelNameRoom.displayName}:`, error);
+                        console.error(
+                            `Failed to add user ${user.username} to the room ${channelNameRoom.displayName}:`,
+                            error
+                        );
                         return {
                             success: false,
                             error: "Failed to add user to the room",
                         };
                     }
                 }
-            }   
+            }
         }
-        
+
         if (Array.isArray(selectOption)) {
             for (const option of selectOption) {
                 let targetRoomName = "";
@@ -136,24 +145,31 @@ export class ExecuteViewSubmitHandler {
                         };
                 }
 
-                const targetRoom = await this.read.getRoomReader().getByName(targetRoomName);
+                const targetRoom = await this.read
+                    .getRoomReader()
+                    .getByName(targetRoomName);
                 if (!targetRoom) {
-                    console.error(`Room with name "${targetRoomName}" not found`);
-                }
-                else {
-                    
+                    console.error(
+                        `Room with name "${targetRoomName}" not found`
+                    );
+                } else {
                     try {
                         await joinUserToRoom(
-                            this.read, 
-                            this.modify, 
-                            this.http, 
-                            this.persistence, 
-                            user, 
-                            targetRoom 
+                            this.read,
+                            this.modify,
+                            this.http,
+                            this.persistence,
+                            user,
+                            targetRoom
                         );
-                        console.log(`User ${user.username} has been added to the room ${targetRoom.displayName}`);
+                        console.log(
+                            `User ${user.username} has been added to the room ${targetRoom.displayName}`
+                        );
                     } catch (error) {
-                        console.error(`Failed to add user ${user.username} to the room ${targetRoom.displayName}:`, error);
+                        console.error(
+                            `Failed to add user ${user.username} to the room ${targetRoom.displayName}:`,
+                            error
+                        );
                         return {
                             success: false,
                             error: "Failed to add user to the room",
@@ -162,7 +178,7 @@ export class ExecuteViewSubmitHandler {
                 }
             }
         }
-        
+
         await sendNotification(
             this.read,
             this.modify,
