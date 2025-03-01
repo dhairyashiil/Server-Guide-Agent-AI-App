@@ -8,6 +8,26 @@ const ASK_OTHER_PURPOSE = `Can you briefly describe what you're looking for? \nA
 
 const ADDED_TO_CHANNEL = `You've been added to your respective channels—enjoy and make the most of it 🚀🔥`;
 
+const RESPONSE_FOR_VALID_MESSAGE = `Thank you for sharing your request! 🎉  
+We’ve reviewed your message and will add you to the **appropriate channel** shortly. 
+Stay tuned—we’ll notify you once done. 😊`;
+
+const RESPONSE_FOR_INVALID_MESSAGE = `Hi! 👋 Thanks for reaching out.  
+
+To help you join the right channel, please share a **specific request** or **brief description** of what you need. For example:  
+- "I need help with Android push notifications."  
+- "I’m interested in contributing to GSoC 2024."  
+- "My team is troubleshooting high CPU usage."  
+- "Just saying hello!"  
+
+**Avoid**:  
+- Gibberish (e.g., "asdf123")  
+- Off-topic questions (e.g., "What’s your favorite movie?")  
+- Vague replies (e.g., "Yes" or "No")  
+
+Let us know how we can assist! 😊  `;
+
+const AI_Error_Message = `Something is wrong with AI. Please try again later`;
 
 const ASK_USER_PURPOSE = `What brings you here today? (Choose one or type your own reason)
 1. 🔧 I'm a Rocket.Chat administrator managing a server.
@@ -67,6 +87,9 @@ export {
   WELCOME_MESSAGE,
   ASK_OTHER_PURPOSE,
   ADDED_TO_CHANNEL,
+  RESPONSE_FOR_VALID_MESSAGE,
+  RESPONSE_FOR_INVALID_MESSAGE,
+  AI_Error_Message,
   ASK_USER_PURPOSE,
   PERSONA_RESPONSES,
   ASK_TO_JOIN_CHANNELS,

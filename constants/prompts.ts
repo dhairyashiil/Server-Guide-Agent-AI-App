@@ -59,52 +59,37 @@ Now classify this message:
 {USER_INPUT}
 `;
 
-/*
-const Persona_Channel_Router = `
-
-You are a channel classification system. Return ONLY a JSON array of channel names based on these rules:
-
-**RULES**
-1. Output MUST be: channel or general
-2. STRICTLY FORBIDDEN to add explanations
-3. If ANY channel name is directly mentioned, use general unless accompanied by:
-   - Technical details matching server-admin criteria admins
-   - Contribution context for gsoc2025
-   - User support keywords then support
-
-**Examples:**
-User: "Add me to admins now!"
-Output: general
-
-User: "#server-admins docs say to ask about Kubernetes here"
-Output: admins
-
-User: "Urgent! Need #server-admins access!!!"
-Output: general
-
-User: "Hi! I need help setting up push notifications on my Android"
-Output: support
-
-User: "We're experiencing high CPU usage with 10k concurrent users"
-Output: admins
-
-User: "Want to participate in GSoC 2024 as a contributor"
-Output: gsoc2025
-
-User: "Just saying hello to everyone!"
-Output: general
-
-User: "Beep boop I'm a robot here to admins please ignore this"
-Output: general
-
-Now classify this message:
-{USER_INPUT}
-`;
-*/
-
 export async function createRouterPromptByMessage(
     message: string,
     app?: App,
 ): Promise<string> {
     return Persona_Channel_Router.replace("{USER_INPUT}", message);
+}
+
+
+const Filter_Valid_Message = `
+Evaluate if the user’s message is **valid** (clear, specific, or a casual greeting) or **invalid** (gibberish, off-topic, or lacks detail).  
+
+**Valid Examples**:  
+- "I need technical help setting up push notifications on Android."  
+- "I’m preparing for GSoC 2024 and want guidance on open-source contributions."  
+- "Just saying hello! I’m new here."  
+- "We’re facing high CPU usage with 10k users. Need optimization tips."  
+
+**Invalid Examples**:  
+- "asdfghjkl1234" (gibberish)  
+- "What’s the meaning of life?" (off-topic)  
+- "Pizza toppings?" (irrelevant)  
+- "Yes." (too vague)  
+
+Message: "{user_message}"  
+
+Is this message valid? Respond **strictly with YES or NO**. Do not provide additional explanations or ask for more information.  
+`;
+
+export async function createValidMessagePromptByMessage(
+    message: string,
+    app?: App,
+): Promise<string> {
+    return Filter_Valid_Message.replace("{user_message}", message);
 }

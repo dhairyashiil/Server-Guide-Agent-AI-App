@@ -10,7 +10,7 @@ import { ServerGuideAgentApp } from "../ServerGuideAgentApp";
 import { sendDirectMessage, sendNotification } from "../lib/Messages";
 import { getRoom } from "../lib/RoomInteraction";
 import { joinUserToRoom } from "../lib/addUserToRoom";
-import { createRouterPromptByMessage } from "../constants/prompts";
+import { createRouterPromptByMessage, createValidMessagePromptByMessage } from "../constants/prompts";
 import { createTextCompletion } from "../lib/createTextCompletion";
 import {
     storeOrUpdateData,
@@ -20,7 +20,7 @@ import {
 } from "../lib/PersistenceMethods";
 import { getRoomIds } from "../lib/PersistenceMethods";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
-import { ADDED_TO_CHANNEL } from "../constants/conversation";
+import { ADDED_TO_CHANNEL, AI_Error_Message, RESPONSE_FOR_INVALID_MESSAGE, RESPONSE_FOR_VALID_MESSAGE } from "../constants/conversation";
 import { checkUserAuthorization } from "../lib/checkUserAuthorization";
 
 export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
@@ -42,6 +42,13 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
         const user = message.sender;
         const text = message.text;
 
+        await sendDirectMessage(
+            read,
+            modify,
+            user,
+            "inside postMessageSentToBotHandler",
+        );
+
         // Temporarily
         const isAuthorized = await checkUserAuthorization(read, modify, user);
         if(!isAuthorized) return;
@@ -54,6 +61,7 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
             return;
         }
 
+        /*
         const { room, error } = await getRoom(read, user.id);
         if (error || !room) {
             console.error(error || "Room not found");
@@ -61,19 +69,47 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
         }
 
         console.log("room name: " + room.displayName);
+        */
 
         if (text && text.trim() !== "") {
+
+            const validMessagePrompt = await createValidMessagePromptByMessage(text,
+                this.app,
+            );
+
+            let yesOrNo: string;
+
+            yesOrNo = await createTextCompletion(
+                this.app,
+                http,
+                validMessagePrompt,
+                undefined,
+                user,
+            );
+
+            if(yesOrNo === "YES") {
+                await sendDirectMessage(read, modify, user, RESPONSE_FOR_VALID_MESSAGE);
+            }
+            else if(yesOrNo === "NO") {
+                await sendDirectMessage(read, modify, user, RESPONSE_FOR_INVALID_MESSAGE);
+                return;
+            }
+            else {
+                await sendDirectMessage(read, modify, user, AI_Error_Message);
+                return;
+            }
+
             let channelNameByLlm: string;
 
-            const prompt = await createRouterPromptByMessage(
+            const routerPrompt = await createRouterPromptByMessage(
                 text,
                 this.app,
             );
             channelNameByLlm = await createTextCompletion(
                 this.app,
                 http,
-                prompt,
-                room,
+                routerPrompt,
+                undefined,
                 user,
             );
 
