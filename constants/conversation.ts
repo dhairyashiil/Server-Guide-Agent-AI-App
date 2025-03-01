@@ -4,7 +4,7 @@ I'm here to help you get started. Let’s find the best channels and resources f
 
 
 // Step 2: Identify User Persona
-const ASK_OTHER_PURPOSE = `Can you briefly describe what you're looking for?`;
+const ASK_OTHER_PURPOSE = `Can you briefly describe what you're looking for? \nAccording to your response I will add you to the respective channel. Please describe in detail`;
 
 const ADDED_TO_CHANNEL = `You've been added to your respective channels—enjoy and make the most of it 🚀🔥`;
 

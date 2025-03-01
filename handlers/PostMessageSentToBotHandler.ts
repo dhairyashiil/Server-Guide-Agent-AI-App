@@ -21,6 +21,7 @@ import {
 import { getRoomIds } from "../lib/PersistenceMethods";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
 import { ADDED_TO_CHANNEL } from "../constants/conversation";
+import { checkUserAuthorization } from "../lib/checkUserAuthorization";
 
 export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
     constructor(
@@ -40,6 +41,10 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
     ): Promise<void> {
         const user = message.sender;
         const text = message.text;
+
+        // Temporarily
+        const isAuthorized = await checkUserAuthorization(read, modify, user);
+        if(!isAuthorized) return;
 
         console.log("user: " + user.name);
         console.log("text: " + text);
