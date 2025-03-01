@@ -42,13 +42,6 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
         const user = message.sender;
         const text = message.text;
 
-        await sendDirectMessage(
-            read,
-            modify,
-            user,
-            "inside postMessageSentToBotHandler",
-        );
-
         // Temporarily
         const isAuthorized = await checkUserAuthorization(read, modify, user);
         if(!isAuthorized) return;
