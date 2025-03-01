@@ -6,10 +6,10 @@ import { sendNotification } from "./Messages";
 
 export async function createTextCompletion(
     app: App,
-    room: IRoom,
-    user: IUser,
     http: IHttp,
-    prompt: string
+    prompt: string,
+    room?: IRoom,
+    user?: IUser,
 ): Promise<string> {
     const model = await app
         .getAccessors()
@@ -38,13 +38,14 @@ export async function createTextCompletion(
     });
 
     if (!response.content) {
-        await sendNotification(
-            this.read,
-            this.modify,
-            user,
-            room,
-            `Something is wrong with AI. Please try again later`
-        );
+        // await sendNotification(
+        //     this.read,
+        //     this.modify,
+        //     user,
+        //     room,
+        //     `Something is wrong with AI. Please try again later`
+        // );
+        console.log("Something is wrong with AI. Please try again later");
 
         throw new Error("Something is wrong with AI. Please try again later");
     }

@@ -75,15 +75,15 @@ export class ExecuteViewSubmitHandler {
             let channelNameByLlm: string;
 
             const prompt = await createRouterPromptByMessage(
+                onboardingMessage,
                 this.app,
-                onboardingMessage
             );
             channelNameByLlm = await createTextCompletion(
                 this.app,
+                this.http,
+                prompt,
                 room,
                 user,
-                this.http,
-                prompt
             );
 
             const regex = /\["#(\w+)"\]/;

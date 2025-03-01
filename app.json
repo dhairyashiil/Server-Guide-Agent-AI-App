@@ -13,7 +13,8 @@
     "classFile": "ServerGuideAgentApp.ts",
     "description": "An AI Agent that will help to onboard new users.",
     "implements": [
-        "IPostRoomUserJoined"
+        "IPostRoomUserJoined",
+        "IPostMessageSentToBot"
     ],
     "permissions": [
         {

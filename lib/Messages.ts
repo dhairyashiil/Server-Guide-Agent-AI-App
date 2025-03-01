@@ -2,6 +2,7 @@ import {
     IModify,
     IRead,
     IPersistence,
+    IHttp,
 } from "@rocket.chat/apps-engine/definition/accessors";
 import { IRoom, RoomType } from "@rocket.chat/apps-engine/definition/rooms";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@rocket.chat/apps-engine/definition/uikit";
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
 import { NotificationsController } from "./Notifications";
+import { IMessageRaw } from "@rocket.chat/apps-engine/definition/messages";
 
 export async function sendNotification(
     read: IRead,
@@ -79,7 +81,7 @@ export async function sendDirectMessage(
     modify: IModify,
     user: IUser,
     message: string,
-    persistence: IPersistence,
+    persistence?: IPersistence,
     blocks?: BlockBuilder | [IBlock]
 ): Promise<string> {
     const appUser = (await read.getUserReader().getAppUser()) as IUser;
@@ -90,11 +92,11 @@ export async function sendDirectMessage(
         user.username
     )) as IRoom;
 
-    const shouldSend = await shouldSendMessage(read, persistence, user);
+    // const shouldSend = await shouldSendMessage(read, persistence, user);
 
-    if (!shouldSend) {
-        return "";
-    }
+    // if (!shouldSend) {
+    //     return "";
+    // }
 
     return await sendMessage(modify, targetRoom, appUser, message, blocks);
 }
@@ -128,4 +130,68 @@ export async function getDirect(
         roomId = await modify.getCreator().finish(newRoom);
         return await read.getRoomReader().getById(roomId);
     }
+}
+
+export async function getRoomMessages(
+    room: IRoom,
+    read: IRead,
+    user?: IUser,
+    http?: IHttp,
+    addOns?: string[],
+    xAuthToken?: string,
+    xUserId?: string
+): Promise<string> {
+    const messages: IMessageRaw[] = await read
+        .getRoomReader()
+        .getMessages(room.id, {
+            limit: 100,
+            sort: { createdAt: 'asc' },
+        });
+
+    const messageTexts: string[] = [];
+    for (const message of messages) {
+        if (message.text) {
+            messageTexts.push(
+                `Message at ${message.createdAt}\n${message.sender.name}: ${message.text}\n`
+            );
+        }
+    }
+    return messageTexts.join('\n');
+}
+
+export async function getThreadMessages(
+    room: IRoom,
+    read: IRead,
+    modify: IModify,
+    user: IUser,
+    http: IHttp,
+    threadId: string,
+    addOns: string[],
+    xAuthToken: string,
+    xUserId: string
+): Promise<string> {
+    const threadReader = read.getThreadReader();
+    const thread = await threadReader.getThreadById(threadId);
+
+    if (!thread) {
+        await sendNotification(
+            read,
+            modify,
+            user,
+            room,
+            `Thread not found`
+        );
+        throw new Error('Thread not found');
+    }
+
+    const messageTexts: string[] = [];
+    for (const message of thread) {
+        if (message.text) {
+            messageTexts.push(`${message.sender.name}: ${message.text}`);
+        }
+    }
+
+    // threadReader repeats the first message once, so here we remove it
+    messageTexts.shift();
+    return messageTexts.join('\n');
 }

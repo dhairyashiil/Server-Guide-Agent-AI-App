@@ -103,8 +103,8 @@ Now classify this message:
 */
 
 export async function createRouterPromptByMessage(
-    app: App,
-    message: string
+    message: string,
+    app?: App,
 ): Promise<string> {
     return Persona_Channel_Router.replace("{USER_INPUT}", message);
 }
