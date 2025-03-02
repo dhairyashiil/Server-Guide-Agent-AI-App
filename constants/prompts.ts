@@ -93,3 +93,34 @@ export async function createValidMessagePromptByMessage(
 ): Promise<string> {
     return Filter_Valid_Message.replace("{user_message}", message);
 }
+
+
+const Extract_User_Intent = `
+Analyze the user's message and classify their intent into one of the following categories:  
+1. TechnicalHelp  
+2. OpenSourceContributions  
+3. Networking  
+4. Learning  
+5. CasualGreeting  
+6. Other  
+
+**Examples**:  
+- "I need help setting up push notifications on Android." → TechnicalHelp  
+- "I’m preparing for GSoC 2024 and want guidance on open-source contributions." → OpenSourceContributions  
+- "Just saying hello! I’m new here." → CasualGreeting  
+- "What are the best resources to learn Python?" → Learning  
+
+User's Message: "{user_message}"  
+
+Respond with only the intent category (e.g., "TechnicalHelp"). Do not provide additional explanations.  
+`;
+
+
+export async function createUserIntentPromptByMessage(
+    message: string,
+    app?: App,
+): Promise<string> {
+    return Extract_User_Intent.replace("{user_message}", message);
+}
+
+

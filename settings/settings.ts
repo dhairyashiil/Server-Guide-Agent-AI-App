@@ -18,6 +18,15 @@ export const settings: ISetting[] = [
         packageValue: "llama3-8b:1234",
     },
     {
+        id: "adminUsernames",
+        i18nLabel: "Usernames of Admins",
+        i18nDescription: "Enter the Usrenames of admins (comma separated)",
+        type: SettingType.STRING,
+        required: true,
+        public: false,
+        packageValue: "",
+    },
+    {
         id: "x-auth-token",
         i18nLabel: "Personal Access Token",
         i18nDescription: "Must be filled to enable file summary add-on",
