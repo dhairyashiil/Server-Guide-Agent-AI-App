@@ -11,7 +11,11 @@ import { ServerGuideAgentApp } from "../ServerGuideAgentApp";
 import { sendDirectMessage, sendNotification } from "../lib/Messages";
 import { getRoom } from "../lib/RoomInteraction";
 import { joinUserToRoom } from "../lib/addUserToRoom";
-import { createRouterPromptByMessage, createUserIntentPromptByMessage, createValidMessagePromptByMessage } from "../constants/prompts";
+import {
+    createRouterPromptByMessage,
+    createUserIntentPromptByMessage,
+    createValidMessagePromptByMessage,
+} from "../constants/prompts";
 import { createTextCompletion } from "../lib/createTextCompletion";
 import {
     storeOrUpdateData,
@@ -24,7 +28,12 @@ import {
 } from "../lib/PersistenceMethods";
 import { getRoomIds } from "../lib/PersistenceMethods";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
-import { ADDED_TO_CHANNEL, AI_Error_Message, RESPONSE_FOR_INVALID_MESSAGE, RESPONSE_FOR_VALID_MESSAGE } from "../constants/conversation";
+import {
+    ADDED_TO_CHANNEL,
+    AI_Error_Message,
+    RESPONSE_FOR_INVALID_MESSAGE,
+    RESPONSE_FOR_VALID_MESSAGE,
+} from "../constants/conversation";
 import { checkUserAuthorization } from "../lib/checkUserAuthorization";
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
 
@@ -49,7 +58,7 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
 
         // Temporarily
         const isAuthorized = await checkUserAuthorization(read, modify, user);
-        if(!isAuthorized) return;
+        if (!isAuthorized) return;
 
         console.log("user: " + user.name);
         console.log("text: " + text);
@@ -70,9 +79,9 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
         */
 
         if (text && text.trim() !== "") {
-
-            const validMessagePrompt = await createValidMessagePromptByMessage(text,
-                this.app,
+            const validMessagePrompt = await createValidMessagePromptByMessage(
+                text,
+                this.app
             );
 
             let yesOrNo: string;
@@ -82,17 +91,25 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
                 http,
                 validMessagePrompt,
                 undefined,
-                user,
+                user
             );
 
-            if(yesOrNo === "YES") {
-                await sendDirectMessage(read, modify, user, RESPONSE_FOR_VALID_MESSAGE);
-            }
-            else if(yesOrNo === "NO") {
-                await sendDirectMessage(read, modify, user, RESPONSE_FOR_INVALID_MESSAGE);
+            if (yesOrNo === "YES") {
+                await sendDirectMessage(
+                    read,
+                    modify,
+                    user,
+                    RESPONSE_FOR_VALID_MESSAGE
+                );
+            } else if (yesOrNo === "NO") {
+                await sendDirectMessage(
+                    read,
+                    modify,
+                    user,
+                    RESPONSE_FOR_INVALID_MESSAGE
+                );
                 return;
-            }
-            else {
+            } else {
                 await sendDirectMessage(read, modify, user, AI_Error_Message);
                 return;
             }
@@ -101,22 +118,22 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
 
             const routerPrompt = await createRouterPromptByMessage(
                 text,
-                this.app,
+                this.app
             );
             channelNameByLlm = await createTextCompletion(
                 this.app,
                 http,
                 routerPrompt,
                 undefined,
-                user,
+                user
             );
 
             console.log("channelNameByLlm: " + channelNameByLlm);
-            
+
             const regex = /\["#(\w+)"\]/;
             const match = channelNameByLlm.match(regex);
             const channelName = match?.[1];
-            
+
             console.log("channelName: " + channelName);
             if (channelName) {
                 const channelNameRoom = await read
@@ -148,9 +165,9 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
                 }
             }
 
-
-            const userIntentPrompt = await createUserIntentPromptByMessage(text,
-                this.app,
+            const userIntentPrompt = await createUserIntentPromptByMessage(
+                text,
+                this.app
             );
 
             let intentCategory: string;
@@ -160,7 +177,7 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
                 http,
                 userIntentPrompt,
                 undefined,
-                user, 
+                user
             );
 
             /*
@@ -172,32 +189,43 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
                 6. Other
             */
 
-            await deleteAllUserIntents(persistence);
-    
             await storeUserIntent(persistence, user.id, text, intentCategory);
 
             // const userIntents = await getUserIntents(read, { userId: 'some-user-id' });
             // const userIntents = await getUserIntents(read, { intent: 'some-intent' });
-            const userIntents = await getUserIntents(read, { userId: user.id, intent: intentCategory });
+            const userIntents = await getUserIntents(read, {
+                userId: user.id,
+                intent: intentCategory,
+            });
 
-            const userId = userIntents[0].userId
+            const userId = userIntents[0].userId;
             const intent = userIntents[0].intent;
             const message = userIntents[0].message;
             const timestamp = userIntents[0].timestamp;
 
-            const adminUsernames = await this.app.getAccessors().environmentReader.getSettings().getValueById("adminUsernames");
+            const adminUsernames = await this.app
+                .getAccessors()
+                .environmentReader.getSettings()
+                .getValueById("adminUsernames");
 
             // Access the IUserRead interface
             const userReader: IUserRead = read.getUserReader();
+            const newUser: IUser | undefined = await userReader.getById(userId);
 
             // Retrieve the user by username
-            const adminUser: IUser | undefined = await userReader.getByUsername(adminUsernames);
-            
-            await sendDirectMessage(read, modify, adminUser, 
-                `userId: ${userId}
-                intent: ${intent}
-                message: ${message}
-                timestamp: ${timestamp}`,
+            const adminUser: IUser | undefined = await userReader.getByUsername(
+                adminUsernames
+            );
+
+            await sendDirectMessage(
+                read,
+                modify,
+                adminUser,
+                `User Id: ${userId}
+                Name: ${newUser.name}
+                Intent: ${intent}
+                Message: ${message}
+                Timestamp: ${timestamp}`
             );
         }
 

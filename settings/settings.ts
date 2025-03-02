@@ -24,7 +24,7 @@ export const settings: ISetting[] = [
         type: SettingType.STRING,
         required: true,
         public: false,
-        packageValue: "",
+        packageValue: "dhairyashil.shinde",
     },
     {
         id: "x-auth-token",

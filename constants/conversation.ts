@@ -2,7 +2,6 @@
 const WELCOME_MESSAGE = `Hey there! 👋 Welcome to Rocket.Chat! 
 I'm here to help you get started. Let’s find the best channels and resources for you.`;
 
-
 // Step 2: Identify User Persona
 const ASK_OTHER_PURPOSE = `Can you briefly describe what you're looking for? \nAccording to your response I will add you to the respective channel. Please describe in detail`;
 
@@ -18,12 +17,11 @@ To help you join the right channel, please share a **specific request** or **bri
 - "I need help with Android push notifications."  
 - "I’m interested in contributing to GSoC 2024."  
 - "My team is troubleshooting high CPU usage."  
-- "Just saying hello!"  
 
 **Avoid**:  
 - Gibberish (e.g., "asdf123")  
 - Off-topic questions (e.g., "What’s your favorite movie?")  
-- Vague replies (e.g., "Yes" or "No")  
+- Vague replies (e.g., "Yes", "No", "Hello")  
 
 Let us know how we can assist! 😊  `;
 
@@ -36,28 +34,27 @@ const ASK_USER_PURPOSE = `What brings you here today? (Choose one or type your o
 4. 🚀 I want to learn more about Rocket.Chat and explore.
 5. ✨ Other (Please describe in a few words!)`;
 
-
 // Step 3: Confirm Persona & Provide Initial Guidance
 const PERSONA_RESPONSES = {
-  admin: `Got it! Since you're an admin, you'll find useful discussions and troubleshooting tips in:
+    admin: `Got it! Since you're an admin, you'll find useful discussions and troubleshooting tips in:
   - **#admin-support**: Ask questions about setting up and managing Rocket.Chat.
   - **#best-practices**: Learn tips and strategies from other admins.`,
 
-  developer: `Great! As a developer/contributor, you’ll love these channels:
+    developer: `Great! As a developer/contributor, you’ll love these channels:
   - **#dev-contributors**: Discuss development and contributions to Rocket.Chat.
   - **#gsoc**: Learn about Google Summer of Code and how to contribute.`,
 
-  user: `No problem! If you're looking for support, these channels will be helpful:
+    user: `No problem! If you're looking for support, these channels will be helpful:
   - **#user-support**: Get help from the community.
   - **#faqs**: Find answers to common questions.`,
 
-  explorer: `Awesome! Here are some good places to start:
+    explorer: `Awesome! Here are some good places to start:
   - **#announcements**: Stay updated with the latest news and features.
   - **#general**: Join open discussions with other members.`,
 
-  default: `I see! Let me guide you to some general resources:
+    default: `I see! Let me guide you to some general resources:
   - **#introductions**: Say hi and meet the community.
-  - **#general**: Join open discussions.` 
+  - **#general**: Join open discussions.`,
 };
 
 // Step 3: Ask for Confirmation Before Adding to Channels
@@ -84,16 +81,16 @@ Enjoy your time in Rocket.Chat! 🚀`;
 
 // Export all messages
 export {
-  WELCOME_MESSAGE,
-  ASK_OTHER_PURPOSE,
-  ADDED_TO_CHANNEL,
-  RESPONSE_FOR_VALID_MESSAGE,
-  RESPONSE_FOR_INVALID_MESSAGE,
-  AI_Error_Message,
-  ASK_USER_PURPOSE,
-  PERSONA_RESPONSES,
-  ASK_TO_JOIN_CHANNELS,
-  CHANNEL_GUIDE,
-  ADDITIONAL_HELP,
-  FINAL_MESSAGE
+    WELCOME_MESSAGE,
+    ASK_OTHER_PURPOSE,
+    ADDED_TO_CHANNEL,
+    RESPONSE_FOR_VALID_MESSAGE,
+    RESPONSE_FOR_INVALID_MESSAGE,
+    AI_Error_Message,
+    ASK_USER_PURPOSE,
+    PERSONA_RESPONSES,
+    ASK_TO_JOIN_CHANNELS,
+    CHANNEL_GUIDE,
+    ADDITIONAL_HELP,
+    FINAL_MESSAGE,
 };

@@ -63,10 +63,14 @@ export class OnboardingForm implements ISlashCommand {
         persistence: IPersistence;
         context: SlashCommandContext;
     }): Promise<void> {
-
         // Temporarily
-        const isAuthorized = await checkUserAuthorization(read, modify, sender, room);
-        if(!isAuthorized) return;
+        const isAuthorized = await checkUserAuthorization(
+            read,
+            modify,
+            sender,
+            room
+        );
+        if (!isAuthorized) return;
 
         if (!Array.isArray(command)) {
             return;

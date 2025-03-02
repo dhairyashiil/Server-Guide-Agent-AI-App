@@ -23,8 +23,12 @@ import { IMessage } from "@rocket.chat/apps-engine/definition/messages"; // Impo
 import { sendDirectMessage } from "./lib/Messages";
 import { ASK_OTHER_PURPOSE, WELCOME_MESSAGE } from "./constants/conversation";
 import { IPostMessageSentToBot } from "@rocket.chat/apps-engine/definition/messages/IPostMessageSentToBot";
+import { NewUserIntentAnalyzer } from "./slashCommands/NewUserIntentAnalyzer";
 
-export class ServerGuideAgentApp extends App implements IPostRoomUserJoined, IPostMessageSentToBot {
+export class ServerGuideAgentApp
+    extends App
+    implements IPostRoomUserJoined, IPostMessageSentToBot
+{
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
@@ -59,7 +63,13 @@ export class ServerGuideAgentApp extends App implements IPostRoomUserJoined, IPo
             modify,
             persistence
         );
-        await handler.executePostMessageSentToBot(message, read, http, persistence, modify);
+        await handler.executePostMessageSentToBot(
+            message,
+            read,
+            http,
+            persistence,
+            modify
+        );
     }
 
     public async executeViewSubmitHandler(
@@ -86,6 +96,9 @@ export class ServerGuideAgentApp extends App implements IPostRoomUserJoined, IPo
             ),
             configuration.slashCommands.provideSlashCommand(
                 new OnboardingForm(this)
+            ),
+            configuration.slashCommands.provideSlashCommand(
+                new NewUserIntentAnalyzer(this)
             ),
         ]);
     }
