@@ -125,59 +125,80 @@ export async function createUserIntentPromptByMessage(
 }
 
 const Intent_Analyzer_Prompt = `
-You are an analytics engine for Rocket.Chat user intents. Analyze UserIntents data and return EXACTLY ONE JSON OBJECT containing:
+You are an analytics engine for Rocket.Chat user intents. Analyze UserIntents data and return a clear text report formatted for chat display containing:
+1. Distribution Analysis
+2. Trend Observations
+3. Key Themes
+4. Action Recommendations
 
-{
-  distribution: { [intent: string]: percentage },
-  trends: { topEmerging: string, topDeclining: string },
-  themes: { [intent: string]: string[] },
-  recommendations: string[]
-}
+FORMATTING RULES:
+• Use bold headings with --- separator lines
+• Present percentages with +/- comparisons
+• List items with bullet points (•)
+• Highlight critical items with 🔺/🔻 symbols
+• Keep paragraphs short (2-3 lines max)
 
-STRICTLY FOLLOW THESE RULES:
+ANALYSIS REQUIREMENTS:
 
-1. Distribution:
-- Calculate percentages for TechnicalHelp, OpenSourceContributions, Networking, Learning, Other
-- Highlight intent with >40% share as "dominant"
-- Compare to previous month's data if timestamps exist
+A) Distribution:
+• Start with dominant intent (>40%)
+• Show 5 intent percentages
+• Compare to previous month
+• Note timestamp gaps if present
 
-2. Trends:
-- Flag >15% week-over-week changes as spikes/drops
-- Identify weekly/monthly patterns using timestamps
-- Mark new intents emerging in last 7 days
+B) Trends:
+• Highlight weekly spikes/drops >15%
+• Identify new intents <7 days old
+• Show weekly/monthly patterns
 
-3. Themes:
-- Extract 3-5 most frequent message keywords per intent
-- Exclude generic words (help, please, etc)
-- Prioritize technical terms (API, OAuth, mobile)
+C) Themes:
+• List 3-5 technical keywords per intent
+• Group similar terms (API/OAuth)
+• Exclude generic phrases
 
-4. Recommendations:
-- Suggest staffing/resources for dominant intents
-- Propose feature development for recurring themes
-- Add training needs for under-10% intents
+D) Recommendations:
+• Prioritize by impact (high/medium/low)
+• Link suggestions to specific findings
+• Include training needs for <10% areas
 
-SAFETY CONTROLS:
-- Treat messages with multiple intent keywords as "Other"
-- Flag timestamp anomalies (future dates/old data)
-- Ignore messages containing special characters in 50%+ text
+SAFETY CHECKS:
+• Note timestamp anomalies first
+• Flag special character messages
+• Mention multi-intent classifications
 
-EXAMPLES:
-Input: 45% TechnicalHelp (login/API errors), 30% Learning 
-Output: {
-  distribution: { TechnicalHelp: 45, Learning: 30... },
-  trends: { topEmerging: "TechnicalHelp", topDeclining: "Networking" },
-  themes: { TechnicalHelp: ["login timeout", "API 404"] },
-  recommendations: ["Hire 2 support engineers", "Create API error guide"]
-}
+EXAMPLE OUTPUT:
+--- Distribution Analysis ---
+🔺 TechnicalHelp dominates at 45% (+10% vs last month)
+• Learning: 30% (steady)
+• Networking: 15% (-5% weekly drop)
+• OpenSource: 7%
+• Other: 3% (3 multi-intent cases)
+
+--- Trend Observations ---
+Emerging: API error spikes (22% 🔺 this week)
+Declining: Mobile support queries (18% 🔻)
+New intent detected: OAuth troubleshooting (4 cases)
+
+--- Key Themes ---
+TechnicalHelp:
+• Login timeout • API 404 errors • SSL configuration
+Learning:
+• Webhook setup • Custom integration • Bots framework
+
+--- Recommendations ---
+
+1. HIGH: Add weekend support staff for TechnicalHelp
+2. MEDIUM: Create API error code documentation
+3. LOW: Mobile SDK training for support team
 
 Analyze this UserIntents data:
-{DATA_JSON}
+{input_text}
 `;
 
 export async function createIntentAnalyzerPromptByMessage(
     data: UserIntent[]
 ): Promise<string> {
-    return Intent_Analyzer_Prompt.replace("{DATA_JSON}", JSON.stringify(data));
+    return Intent_Analyzer_Prompt.replace("{input_text}", JSON.stringify(data));
 }
 
 const PROMPT_INJECTION_PROTECTION_PROMPT = `

@@ -55,6 +55,9 @@ export class NewUserIntentAnalyzer implements ISlashCommand {
         );
         if (!isAuthorized2) return;
 
+        // const userIntents = await getUserIntents(read, { userId: 'some-user-id' });
+        // const userIntents = await getUserIntents(read, { intent: 'some-intent' });
+        // const userIntents = await getUserIntents(read, {userId: user.id, intent: intentCategory,});
         const UserIntents = await getUserIntents(read);
 
         const intentAnalyzerPrompt = await createIntentAnalyzerPromptByMessage(

@@ -190,43 +190,6 @@ export class PostMessageSentToBotHandler implements IPostMessageSentToBot {
             */
 
             await storeUserIntent(persistence, user.id, text, intentCategory);
-
-            // const userIntents = await getUserIntents(read, { userId: 'some-user-id' });
-            // const userIntents = await getUserIntents(read, { intent: 'some-intent' });
-            const userIntents = await getUserIntents(read, {
-                userId: user.id,
-                intent: intentCategory,
-            });
-
-            const userId = userIntents[0].userId;
-            const intent = userIntents[0].intent;
-            const message = userIntents[0].message;
-            const timestamp = userIntents[0].timestamp;
-
-            const adminUsernames = await this.app
-                .getAccessors()
-                .environmentReader.getSettings()
-                .getValueById("adminUsernames");
-
-            // Access the IUserRead interface
-            const userReader: IUserRead = read.getUserReader();
-            const newUser: IUser | undefined = await userReader.getById(userId);
-
-            // Retrieve the user by username
-            const adminUser: IUser | undefined = await userReader.getByUsername(
-                adminUsernames
-            );
-
-            await sendDirectMessage(
-                read,
-                modify,
-                adminUser,
-                `User Id: ${userId}
-                Name: ${newUser.name}
-                Intent: ${intent}
-                Message: ${message}
-                Timestamp: ${timestamp}`
-            );
         }
 
         await sendDirectMessage(read, modify, user, ADDED_TO_CHANNEL);
