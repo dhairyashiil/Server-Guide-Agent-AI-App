@@ -24,6 +24,7 @@ import { sendDirectMessage } from "./lib/Messages";
 import { ASK_OTHER_PURPOSE, WELCOME_MESSAGE } from "./constants/conversation";
 import { IPostMessageSentToBot } from "@rocket.chat/apps-engine/definition/messages/IPostMessageSentToBot";
 import { NewUserIntentAnalyzer } from "./slashCommands/NewUserIntentAnalyzer";
+import { PersonaForm } from "./slashCommands/PersonaForm";
 
 export class ServerGuideAgentApp
     extends App
@@ -96,6 +97,9 @@ export class ServerGuideAgentApp
             ),
             configuration.slashCommands.provideSlashCommand(
                 new OnboardingForm(this)
+            ),
+            configuration.slashCommands.provideSlashCommand(
+                new PersonaForm(this)
             ),
             configuration.slashCommands.provideSlashCommand(
                 new NewUserIntentAnalyzer(this)

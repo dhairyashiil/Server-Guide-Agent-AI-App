@@ -10,6 +10,7 @@ import { IUser } from "@rocket.chat/apps-engine/definition/users";
 import { ServerGuideAgentApp } from "../ServerGuideAgentApp";
 import { ExecutorProps } from "../definitions/ExecutorProps";
 import { OnboardingFormModal } from "../modals/index";
+import { PersonaFormModal } from "../modals/parsona-form/PersonaFormModal";
 
 export class CommandUtility {
     sender: IUser;
@@ -54,5 +55,9 @@ export class CommandUtility {
 
     public async openOnboardingForm() {
         await this.openModal(OnboardingFormModal);
+    }
+
+    public async openPerosnaForm() {
+        await this.openModal(PersonaFormModal);
     }
 }

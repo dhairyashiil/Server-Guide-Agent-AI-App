@@ -45,12 +45,36 @@ export class ExecuteViewSubmitHandler {
         switch (modalId) {
             case Modals.OnboardingForm:
                 return await this.handleOnboardingFormModal(context);
+            case Modals.PersonaForm:
+                    return await this.handlePersonaFormModal(context);
             default:
                 return {
                     success: false,
                     error: "Unknown modal ID",
                 };
         }
+    }
+
+    private async handlePersonaFormModal(
+        context: UIKitViewSubmitInteractionContext
+    ) {
+        const { user, view } = context.getInteractionData();
+
+        const { room, error } = await getRoom(this.read, user.id);
+        if (error || !room) {
+            return {
+                success: false,
+                error: error || "Room not found",
+            };
+        }
+
+        const onboardingMessage = view.state?.["onboardingMessageId"]["onboardingMessageId"] || "";
+        const selectOption = view.state?.["selectOptionId"]["selectOptionId"] || "";
+
+        return {
+            success: true,
+            ...view,
+        };
     }
 
     private async handleOnboardingFormModal(
@@ -192,4 +216,5 @@ export class ExecuteViewSubmitHandler {
             ...view,
         };
     }
+
 }
