@@ -25,10 +25,11 @@ export async function PersonaFormModal({
 	const room = slashCommandContext?.getRoom() || uiKitContext?.getInteractionData().room;
 	const user = slashCommandContext?.getSender() || uiKitContext?.getInteractionData().user;
 
-	let personaMessage = '';
-	let personaTime = '';
-	let personaDays: string[] = [];
-	let personaToggle = 'off';
+	let personaName = '';
+	let personaDescription = '';
+	let personaChannels = '';
+	let personaResources = '';
+	let personaMessageAfterClassification = '';
 
 	if (user?.id) {
 		let roomId: string;
@@ -43,136 +44,125 @@ export async function PersonaFormModal({
 
 	const blocks = modify.getCreator().getBlockBuilder();
 
-	blocks.addInputBlock({
+    blocks.addInputBlock({
 		label: {
-			text: t('persona_toggle_title'),
+			text: t('persona_name_title'),
 			type: TextObjectType.PLAINTEXT,
 		},
-		element: blocks.newStaticSelectElement({
-			actionId: 'personaToggle',
-			initialValue: personaToggle ?? 'off',
-			options: [
-				{
-					value: 'on',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'On',
-					},
-				},
-				{
-					value: 'off',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Off',
-					},
-				},
-			],
+		element: blocks.newPlainTextInputElement({
+			actionId: 'personaName',
+			initialValue: personaName,
+			placeholder: {
+				text: t('persona_name_placeholder'),
+				type: TextObjectType.PLAINTEXT,
+			},
 		}),
-		blockId: 'personaToggle',
+		blockId: 'personaName',
 	});
 
 	blocks.addInputBlock({
 		label: {
-			text: t('persona_message_title'),
+			text: t('persona_description_title'),
 			type: TextObjectType.PLAINTEXT,
 		},
 		element: blocks.newPlainTextInputElement({
-			actionId: 'personaMessage',
+			actionId: 'personaDescription',
 			multiline: true,
-			initialValue: personaMessage,
+			initialValue: personaDescription,
 			placeholder: {
-				text: t('persona_message_placeholder'),
+				text: t('persona_description_placeholder'),
 				type: TextObjectType.PLAINTEXT,
 			},
 		}),
-		blockId: 'personaMessage',
+		blockId: 'personaDescription',
 	});
 
-	blocks.addInputBlock({
-		label: {
-			text: t('persona_select_days_title'),
-			type: TextObjectType.PLAINTEXT,
-		},
-		element: blocks.newMultiStaticElement({
-			actionId: 'selectDays',
-			initialValue: personaDays,
-			options: [
-				{
-					value: 'monday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Monday',
-						emoji: true,
-					},
-				},
-				{
-					value: 'tuesday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Tuesday',
-						emoji: true,
-					},
-				},
-				{
-					value: 'wednesday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Wednesday',
-						emoji: true,
-					},
-				},
-				{
-					value: 'thursday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Thursday',
-						emoji: true,
-					},
-				},
-				{
-					value: 'friday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Friday',
-						emoji: true,
-					},
-				},
-				{
-					value: 'saturday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Saturday',
-						emoji: true,
-					},
-				},
-				{
-					value: 'sunday',
-					text: {
-						type: TextObjectType.PLAINTEXT,
-						text: 'Sunday',
-						emoji: true,
-					},
-				},
-			],
-		}),
-		blockId: 'selectDays',
-	});
+    blocks.addDividerBlock();
 
-	blocks.addInputBlock({
+    blocks.addInputBlock({
 		label: {
-			text: t('persona_time_title'),
+			text: t('persona_channels_title'),
 			type: TextObjectType.PLAINTEXT,
 		},
 		element: blocks.newPlainTextInputElement({
-			actionId: 'personaTime',
-			initialValue: personaTime,
+			actionId: 'personaChannels',
+			multiline: true,
+			initialValue: personaChannels,
 			placeholder: {
-				text: '24-hour format',
+				text: t('persona_channels_placeholder'),
 				type: TextObjectType.PLAINTEXT,
 			},
 		}),
-		blockId: 'personaTime',
+		blockId: 'personaChannels',
 	});
+
+
+
+    blocks.addInputBlock({
+		label: {
+			text: t('persona_resources_title'),
+			type: TextObjectType.PLAINTEXT,
+		},
+		element: blocks.newPlainTextInputElement({
+			actionId: 'personaResources',
+			multiline: true,
+			initialValue: personaResources,
+			placeholder: {
+				text: t('persona_resources_placeholder'),
+				type: TextObjectType.PLAINTEXT,
+			},
+		}),
+		blockId: 'personaResources',
+	});
+
+    blocks.addDividerBlock();
+
+    blocks.addInputBlock({
+		label: {
+			text: t('persona_message_after_classification_title'),
+			type: TextObjectType.PLAINTEXT,
+		},
+		element: blocks.newPlainTextInputElement({
+			actionId: 'personaMessageAfterClassification',
+			multiline: true,
+			initialValue: personaMessageAfterClassification,
+			placeholder: {
+				text: t('persona_message_after_classification_placeholder'),
+				type: TextObjectType.PLAINTEXT,
+			},
+		}),
+		blockId: 'personaMessageAfterClassification',
+	});
+
+    /*
+    blocks.addSectionBlock({
+        text: blocks.newPlainTextObject('Welcome to the Rocket.Chat UI Kit!'),
+        accessory: blocks.newButtonElement({
+            text: blocks.newPlainTextObject('Click Me'),
+            actionId: 'click_me'
+        })
+    });
+
+    blocks.addImageBlock({
+        // imageUrl: 'https://example.com/image.png',
+        imageUrl: 'https://avatars.githubusercontent.com/u/93669429?v=4',
+        altText: 'Example Image'
+    });
+
+
+    blocks.addDividerBlock();
+
+
+    blocks.addContextBlock({
+        elements: [
+            blocks.newMarkdownTextObject('*Additional information*'),
+            blocks.newImageElement({
+                imageUrl: 'https://avatars.githubusercontent.com/u/93669429?v=4',
+                altText: 'Icon'
+            })
+        ]
+    });
+    */
 
 	return {
 		id: Modals.PersonaForm,
