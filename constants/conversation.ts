@@ -1,3 +1,10 @@
+const FEEDBACK_QUESTION = `Help us level up! Share quick thoughts (1-2 sentences):
+✨ How seamless was onboarding?
+✨ Any frustrations or unexpected bumps?
+✨ What’s one thing that would wow you next time?
+
+(Example: “Loved the quick setup, but I wish ...”)`;
+
 // Step 1: Welcome
 const WELCOME_MESSAGE = `Hey there! 👋 Welcome to Rocket.Chat! 
 I'm here to help you get started. Let’s find the best channels and resources for you.`;
@@ -81,6 +88,7 @@ Enjoy your time in Rocket.Chat! 🚀`;
 
 // Export all messages
 export {
+    FEEDBACK_QUESTION,
     WELCOME_MESSAGE,
     ASK_OTHER_PURPOSE,
     ADDED_TO_CHANNEL,
