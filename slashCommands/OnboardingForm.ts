@@ -12,7 +12,6 @@ import { CommandUtility } from "../lib/CommandUtility";
 import { ServerGuideAgentApp } from "../ServerGuideAgentApp";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
-import { checkUserAuthorization } from "../lib/checkUserAuthorization";
 
 export class OnboardingForm implements ISlashCommand {
     public constructor(private readonly app: ServerGuideAgentApp) {}
@@ -63,19 +62,9 @@ export class OnboardingForm implements ISlashCommand {
         persistence: IPersistence;
         context: SlashCommandContext;
     }): Promise<void> {
-        // Temporarily
-        const isAuthorized = await checkUserAuthorization(
-            read,
-            modify,
-            sender,
-            room
-        );
-        if (!isAuthorized) return;
-
         if (!Array.isArray(command)) {
             return;
         }
-
         const commandUtility = new CommandUtility({
             sender: sender,
             room: room,
@@ -87,7 +76,6 @@ export class OnboardingForm implements ISlashCommand {
             persistence: persistence,
             app: this.app,
         });
-
         commandUtility.openOnboardingForm();
     }
 }
