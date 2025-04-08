@@ -59,7 +59,7 @@ export async function createTextCompletionGroq(
 ): Promise<string> {
     
     const url = `https://api.groq.com/openai/v1`;
-    const apiKeyGroq = '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';
+    const apiKeyGroq = '';
     
     // const model = 'mistral-saba-24b';
     // const model = `llama-3.2-11b-vision-preview`;
@@ -96,8 +96,7 @@ export async function createTextCompletionGroq(
 
 export async function sendRequestToGroqLLM(messages: string): Promise<string> {
     const apiEndpoint = "https://api.groq.com/openai/v1/chat/completions";
-    const apiKey =
-        "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";
+    const apiKey = "";
 
     const requestBody = {
         messages: messages,
